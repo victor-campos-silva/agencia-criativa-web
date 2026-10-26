@@ -1,15 +1,54 @@
-/* ===== Variáveis e base ===== */
+/* =============================================================
+   Agência Criativa Web | estilos.css (refatorado com BEM)
+
+   Convenção de nomes:  .bloco__elemento--modificador
+   - bloco:       componente independente (.menu, .botao, .servicos)
+   - elemento:    parte de um bloco (.menu__link)
+   - modificador: variação de aparência (.botao--claro)
+
+   Regras desta folha:
+   - nenhum seletor de ID e nenhum seletor descendente (.a .b);
+     quase toda regra tem especificidade de uma única classe
+   - cada bloco traz as suas próprias media queries logo abaixo
+   - breakpoints: 48em (tablet) · 56em (desktop) · 90em (tela grande)
+
+   ÍNDICE
+   1. ESTILOS GERAIS .... variáveis, base, .secao
+   2. COMPONENTES ....... .botao, .logo, .hamburguer, .menu,
+                          .valores, .formulario
+   3. SEÇÕES ............ .topo, .home, .sobre, .servicos,
+                          .depoimentos, .contato, .rodape
+   ============================================================= */
+
+
+/* =============================================================
+   1. ESTILOS GERAIS
+   ============================================================= */
+
+/* ----- Variáveis ----- */
 :root {
+  /* cores */
   --azul: #2a3bdb;
   --amarelo: #ffd84d;
+  --amarelo-claro: #ffe27a;
   --tinta: #12163a;
   --nevoa: #eef1fb;
+  --lavanda: #d6daf5;
+  --borda-campo: #b9c0ec;
   --branco: #ffffff;
+
+  /* tipografia */
   --fonte-titulo: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
   --fonte-texto: "Figtree", "Segoe UI", Arial, sans-serif;
+
+  /* medidas */
   --espaco: clamp(1.25rem, 5vw, 5rem); /* margem lateral da página */
+  --raio-cartao: 1.5rem;
+  --raio-pilula: 99em;
+  --preenchimento-cartao: 1.75rem;
 }
 
+/* ----- Base (reset e elementos HTML) ----- */
 *, *::before, *::after { box-sizing: border-box; }
 
 html { font-size: 100%; scroll-behavior: smooth; scroll-padding-top: 5rem; }
@@ -34,14 +73,34 @@ a { color: var(--azul); }
 
 :focus-visible { outline: 0.1875rem solid var(--azul); outline-offset: 0.2em; }
 
-section { padding: clamp(3rem, 8vw, 6rem) var(--espaco); }
+@media (min-width: 90em) {
+  body { font-size: 1.25rem; }
+}
 
-/* ===== Botões ===== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* ----- .secao: espaçamento padrão de toda <section> -----
+   Usada junto do bloco da seção: class="secao home" */
+.secao { padding: clamp(3rem, 8vw, 6rem) var(--espaco); }
+
+@media (min-width: 90em) {
+  .secao { padding-inline: calc((100vw - 80rem) / 2); } /* limita a largura do conteúdo */
+}
+
+
+/* =============================================================
+   2. COMPONENTES
+   ============================================================= */
+
+/* ----- .botao -----
+   Modificadores: --claro (contorno) e --azul (fundo azul) */
 .botao {
   display: inline-block;
   padding: 0.8em 1.6em;
   border: 0.125rem solid var(--tinta);
-  border-radius: 99em;
+  border-radius: var(--raio-pilula);
   background: var(--tinta);
   color: var(--branco);
   font: 600 1rem var(--fonte-texto);
@@ -49,10 +108,122 @@ section { padding: clamp(3rem, 8vw, 6rem) var(--espaco); }
   cursor: pointer;
 }
 .botao:hover { background: var(--azul); border-color: var(--azul); }
-.botao-claro { background: transparent; color: var(--tinta); }
-.botao-claro:hover { color: var(--branco); }
 
-/* ===== Cabeçalho e menu (Flexbox) ===== */
+.botao--claro { background: transparent; color: var(--tinta); }
+.botao--claro:hover { color: var(--branco); }
+
+.botao--azul { background: var(--azul); border-color: var(--azul); }
+.botao--azul:hover { background: var(--tinta); border-color: var(--tinta); }
+
+/* ----- .logo ----- */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font: 600 1.25rem var(--fonte-titulo);
+  color: var(--tinta);
+  text-decoration: none;
+}
+.logo__destaque { color: var(--azul); font-weight: 800; }
+.logo__marca {
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50% 50% 50% 0;
+  background: var(--azul);
+  box-shadow: 0.35em 0.35em 0 var(--amarelo);
+  margin-right: 0.3em;
+}
+
+/* ----- .hamburguer: botão do menu em telas pequenas -----
+   Funciona sem JavaScript: o checkbox guarda o estado (aberto/fechado).
+   No HTML, checkbox, rótulo e .menu precisam ser irmãos (mesmo pai),
+   porque os seletores usam + e ~. */
+.hamburguer__checkbox { position: absolute; opacity: 0; pointer-events: none; }
+.hamburguer__botao { display: none; }
+
+@media (max-width: 48em) {
+  .hamburguer__botao {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3125rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0.6rem;
+    cursor: pointer;
+  }
+  .hamburguer__barra {
+    display: block;
+    height: 0.1875rem;
+    border-radius: 1em;
+    background: var(--tinta);
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  .hamburguer__checkbox:focus-visible + .hamburguer__botao { outline: 0.1875rem solid var(--azul); }
+
+  /* menu aberto: as três barras viram um "X" */
+  .hamburguer__checkbox:checked + .hamburguer__botao .hamburguer__barra--topo { transform: translateY(0.5rem) rotate(45deg); }
+  .hamburguer__checkbox:checked + .hamburguer__botao .hamburguer__barra--meio { opacity: 0; }
+  .hamburguer__checkbox:checked + .hamburguer__botao .hamburguer__barra--base { transform: translateY(-0.5rem) rotate(-45deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamburguer__barra { transition: none; }
+}
+
+/* ----- .menu (Flexbox) -----
+   Modificador: .menu__link--destaque (botão "Contato") */
+.menu__lista { display: flex; align-items: center; gap: 2rem; margin: 0; padding: 0; list-style: none; }
+
+.menu__link { color: var(--tinta); font-weight: 600; text-decoration: none; }
+.menu__link:hover { color: var(--azul); }
+
+.menu__link--destaque { padding: 0.5em 1.2em; border-radius: var(--raio-pilula); background: var(--amarelo); }
+.menu__link--destaque:hover { color: var(--tinta); background: var(--amarelo-claro); }
+
+@media (max-width: 48em) {
+  .menu { display: none; width: 100%; padding-top: 1rem; }
+  .hamburguer__checkbox:checked ~ .menu { display: block; } /* aberto pelo checkbox */
+
+  .menu__lista { flex-direction: column; align-items: stretch; gap: 0; }
+  .menu__link { display: block; padding: 0.75rem 0; border-top: 0.0625rem solid var(--nevoa); }
+
+  /* declarado depois de .menu__link para manter o padding próprio do botão */
+  .menu__link--destaque { margin-top: 0.5rem; padding: 0.5em 1.2em; text-align: center; }
+}
+
+/* ----- .valores (lista de valores da agência) ----- */
+.valores { margin: 0; padding: 0; list-style: none; }
+.valores__item { padding: 0.75em 0 0.75em 1em; border-left: 0.25rem solid var(--amarelo); margin-bottom: 0.75rem; }
+
+/* ----- .formulario ----- */
+.formulario {
+  display: grid;
+  gap: 0.5rem;
+  padding: var(--preenchimento-cartao);
+  border-radius: var(--raio-cartao);
+  background: var(--branco);
+  color: var(--tinta);
+}
+.formulario__rotulo { font-weight: 600; }
+.formulario__campo {
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding: 0.75em 1em;
+  border: 0.125rem solid var(--borda-campo);
+  border-radius: 0.75rem;
+  font: inherit;
+}
+.formulario__campo:focus { border-color: var(--azul); outline: none; box-shadow: 0 0 0 0.1875rem var(--amarelo); }
+.formulario__botao { justify-self: start; } /* posição do botão; a aparência vem de .botao--azul */
+
+
+/* =============================================================
+   3. SEÇÕES
+   ============================================================= */
+
+/* ----- .topo (cabeçalho fixo) ----- */
 .topo {
   position: sticky;
   top: 0;
@@ -66,35 +237,7 @@ section { padding: clamp(3rem, 8vw, 6rem) var(--espaco); }
   border-bottom: 0.0625rem solid var(--nevoa);
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  font: 600 1.25rem var(--fonte-titulo);
-  color: var(--tinta);
-  text-decoration: none;
-}
-.logo strong { color: var(--azul); font-weight: 800; }
-.logo-marca {
-  width: 1.5em;
-  height: 1.5em;
-  border-radius: 50% 50% 50% 0;
-  background: var(--azul);
-  box-shadow: 0.35em 0.35em 0 var(--amarelo);
-  margin-right: 0.3em;
-}
-
-.menu ul { display: flex; align-items: center; gap: 2rem; margin: 0; padding: 0; list-style: none; }
-.menu a { color: var(--tinta); font-weight: 600; text-decoration: none; }
-.menu a:hover { color: var(--azul); }
-.menu .menu-cta { padding: 0.5em 1.2em; border-radius: 99em; background: var(--amarelo); }
-.menu .menu-cta:hover { color: var(--tinta); background: #ffe27a; }
-
-/* menu hambúrguer: só aparece em telas pequenas */
-.menu-toggle { position: absolute; opacity: 0; pointer-events: none; }
-.menu-botao { display: none; }
-
-/* ===== Home ===== */
+/* ----- .home ----- */
 .home {
   display: grid;
   gap: 2.5rem;
@@ -102,20 +245,36 @@ section { padding: clamp(3rem, 8vw, 6rem) var(--espaco); }
   min-height: 85vh;
   background: var(--nevoa);
 }
-.home-texto p { font-size: 1.25rem; }
-.home-acoes { display: flex; flex-wrap: wrap; gap: 1rem; }
-.home-imagem { width: 100%; border-radius: 1.5rem; }
+.home__descricao { font-size: 1.25rem; }
+.home__acoes { display: flex; flex-wrap: wrap; gap: 1rem; }
+.home__imagem { width: 100%; border-radius: var(--raio-cartao); }
 
-/* ===== Sobre nós ===== */
+@media (max-width: 48em) {
+  .home { min-height: auto; }
+  .home__imagem { order: -1; } /* imagem acima do texto no celular */
+}
+
+@media (min-width: 56em) {
+  .home { grid-template-columns: 1.1fr 0.9fr; }
+}
+
+/* ----- .sobre ----- */
 .sobre { display: grid; gap: 2.5rem; align-items: center; }
-.sobre-imagem { width: 100%; max-width: 30rem; border-radius: 50% 1.5rem 1.5rem 1.5rem; }
-.valores { margin: 0; padding: 0; list-style: none; }
-.valores li { padding: 0.75em 0 0.75em 1em; border-left: 0.25rem solid var(--amarelo); margin-bottom: 0.75rem; }
+.sobre__imagem {
+  width: 100%;
+  max-width: 30rem;
+  border-radius: 50% var(--raio-cartao) var(--raio-cartao) var(--raio-cartao);
+}
 
-/* ===== Serviços (CSS Grid) ===== */
+@media (min-width: 56em) {
+  .sobre { grid-template-columns: 0.8fr 1.2fr; gap: 5rem; }
+}
+
+/* ----- .servicos (CSS Grid) -----
+   Modificadores: .servicos__item--destaque e .servicos__nome--destaque */
 .servicos { background: var(--tinta); color: var(--branco); }
-.servicos h2 { margin-bottom: 2rem; }
-.servicos-grade {
+.servicos__titulo { margin-bottom: 2rem; }
+.servicos__grade {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
   gap: 2rem 3rem;
@@ -123,90 +282,46 @@ section { padding: clamp(3rem, 8vw, 6rem) var(--espaco); }
   padding: 0;
   list-style: none;
 }
-.servicos-grade li { padding-top: 1rem; border-top: 0.125rem solid rgba(255, 255, 255, 0.25); }
-.servicos-grade p { margin: 0; color: #d6daf5; }
-.servicos-grade .destaque { border-top-color: var(--amarelo); }
-.servicos-grade .destaque h3 { color: var(--amarelo); }
+.servicos__item { padding-top: 1rem; border-top: 0.125rem solid rgba(255, 255, 255, 0.25); }
+.servicos__item--destaque { border-top-color: var(--amarelo); }
+.servicos__nome--destaque { color: var(--amarelo); }
+.servicos__descricao { margin: 0; color: var(--lavanda); }
 
-/* ===== Depoimentos (Flexbox) ===== */
-.depoimentos-lista { display: flex; flex-direction: column; gap: 2rem; }
-.depoimentos figure { flex: 1; margin: 0; padding: 1.75rem; background: var(--nevoa); border-radius: 1.5rem 1.5rem 1.5rem 0; }
-.depoimentos blockquote { margin: 0 0 1rem; }
-.depoimentos blockquote p { margin: 0; font: 600 1.25rem/1.4 var(--fonte-titulo); }
-.depoimentos figcaption { font-size: 1rem; }
-
-/* ===== Contato ===== */
-.contato { display: grid; gap: 2.5rem; background: var(--azul); color: var(--branco); }
-.contato a { color: var(--amarelo); }
-.contato address { font-style: normal; }
-
-.formulario { display: grid; gap: 0.5rem; padding: 1.75rem; border-radius: 1.5rem; background: var(--branco); color: var(--tinta); }
-.formulario label { font-weight: 600; }
-.formulario input, .formulario textarea {
-  width: 100%;
-  margin-bottom: 0.75rem;
-  padding: 0.75em 1em;
-  border: 0.125rem solid #b9c0ec;
-  border-radius: 0.75rem;
-  font: inherit;
-}
-.formulario input:focus, .formulario textarea:focus { border-color: var(--azul); outline: none; box-shadow: 0 0 0 0.1875rem var(--amarelo); }
-.formulario .botao { justify-self: start; background: var(--azul); border-color: var(--azul); }
-.formulario .botao:hover { background: var(--tinta); border-color: var(--tinta); }
-
-.rodape { padding: 1.5rem var(--espaco); background: var(--tinta); color: #d6daf5; font-size: 0.9375rem; }
-.rodape p { margin: 0; max-width: none; }
-
-/* ===== Celular (até 48em ≈ 768px): menu hambúrguer ===== */
-@media (max-width: 48em) {
-  .menu-botao {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.3125rem;
-    width: 2.75rem;
-    height: 2.75rem;
-    padding: 0.6rem;
-    cursor: pointer;
-  }
-  .menu-botao span { display: block; height: 0.1875rem; border-radius: 1em; background: var(--tinta); transition: transform 0.2s, opacity 0.2s; }
-  .menu-toggle:focus-visible + .menu-botao { outline: 0.1875rem solid var(--azul); }
-  .menu-toggle:checked + .menu-botao span:nth-child(1) { transform: translateY(0.5rem) rotate(45deg); }
-  .menu-toggle:checked + .menu-botao span:nth-child(2) { opacity: 0; }
-  .menu-toggle:checked + .menu-botao span:nth-child(3) { transform: translateY(-0.5rem) rotate(-45deg); }
-
-  .menu { display: none; width: 100%; padding-top: 1rem; }
-  .menu-toggle:checked ~ .menu { display: block; }
-  .menu ul { flex-direction: column; align-items: stretch; gap: 0; }
-  .menu li a { display: block; padding: 0.75rem 0; border-top: 0.0625rem solid var(--nevoa); }
-  .menu .menu-cta { margin-top: 0.5rem; text-align: center; }
-
-  .home { min-height: auto; }
-  .home-imagem { order: -1; }
-}
-
-/* ===== Tablet (a partir de 48em): serviços em 2 colunas, depoimentos lado a lado ===== */
 @media (min-width: 48em) {
-  .depoimentos-lista { flex-direction: row; }
-  .servicos-grade { grid-template-columns: repeat(2, 1fr); }
+  .servicos__grade { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ===== Desktop (a partir de 56em): layouts em duas colunas ===== */
 @media (min-width: 56em) {
-  .home { grid-template-columns: 1.1fr 0.9fr; }
-  .sobre { grid-template-columns: 0.8fr 1.2fr; gap: 5rem; }
+  .servicos__grade { grid-template-columns: repeat(3, 1fr); }
+  .servicos__item--destaque { grid-column: span 2; }
+}
+
+/* ----- .depoimentos (Flexbox) ----- */
+.depoimentos__lista { display: flex; flex-direction: column; gap: 2rem; }
+.depoimentos__item {
+  flex: 1;
+  margin: 0;
+  padding: var(--preenchimento-cartao);
+  background: var(--nevoa);
+  border-radius: var(--raio-cartao) var(--raio-cartao) var(--raio-cartao) 0;
+}
+.depoimentos__citacao { margin: 0 0 1rem; }
+.depoimentos__texto { margin: 0; font: 600 1.25rem/1.4 var(--fonte-titulo); }
+.depoimentos__autor { font-size: 1rem; }
+
+@media (min-width: 48em) {
+  .depoimentos__lista { flex-direction: row; }
+}
+
+/* ----- .contato ----- */
+.contato { display: grid; gap: 2.5rem; background: var(--azul); color: var(--branco); }
+.contato__endereco { font-style: normal; }
+.contato__link { color: var(--amarelo); }
+
+@media (min-width: 56em) {
   .contato { grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
-  .servicos-grade { grid-template-columns: repeat(3, 1fr); }
-  .servicos-grade .destaque { grid-column: span 2; }
 }
 
-/* ===== Telas grandes (a partir de 90em): limita a largura do conteúdo ===== */
-@media (min-width: 90em) {
-  body { font-size: 1.25rem; }
-  section { padding-inline: calc((100vw - 80rem) / 2); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .menu-botao span { transition: none; }
-}
+/* ----- .rodape ----- */
+.rodape { padding: 1.5rem var(--espaco); background: var(--tinta); color: var(--lavanda); font-size: 0.9375rem; }
+.rodape__texto { margin: 0; max-width: none; }
