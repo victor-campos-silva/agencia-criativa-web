@@ -1,0 +1,60 @@
+// =============================================================
+// _mixins.scss
+// Blocos de código reutilizáveis. Uso: @include nome(argumentos);
+// =============================================================
+@use "variaveis" as *;
+
+// ----- Media queries -----
+// O conteúdo entre chaves do @include entra no lugar do @content.
+@mixin a-partir-de($largura) {
+  @media (min-width: $largura) {
+    @content;
+  }
+}
+
+@mixin ate($largura) {
+  @media (max-width: $largura) {
+    @content;
+  }
+}
+
+@mixin movimento-reduzido {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+// ----- Lista sem marcadores, margem ou recuo -----
+@mixin lista-limpa {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+// ----- Grade (CSS Grid) com espaçamento e alinhamento opcional -----
+// Se $alinhamento ficar como null, o Sass não escreve a propriedade.
+@mixin grade($espaco, $alinhamento: null) {
+  display: grid;
+  gap: $espaco;
+  align-items: $alinhamento;
+}
+
+// ----- Cartão: preenchimento, cantos arredondados e fundo -----
+@mixin cartao($fundo, $raio: $raio-cartao) {
+  padding: $preenchimento-cartao;
+  border-radius: $raio;
+  background: $fundo;
+}
+
+// ----- Botão padrão: cores normais e no hover -----
+@mixin botao-cores($fundo, $borda, $texto, $fundo-hover, $borda-hover: $fundo-hover, $texto-hover: $texto) {
+  background: $fundo;
+  border-color: $borda;
+  color: $texto;
+
+  &:hover {
+    background: $fundo-hover;
+    border-color: $borda-hover;
+    color: $texto-hover;
+  }
+}

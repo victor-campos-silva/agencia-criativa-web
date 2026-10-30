@@ -1,0 +1,12 @@
+// =============================================================
+// estilos.scss: arquivo principal
+// Reúne os partials com @use. A ordem dos @use é a ordem do CSS final.
+//
+// Compilar:  npm run build   (gera css/estilos.css)
+// Acompanhar mudanças:  npm run watch
+// =============================================================
+@use "variaveis";
+@use "mixins";
+@use "base";
+@use "layout";
+@use "componentes";

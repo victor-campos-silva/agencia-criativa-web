@@ -1,0 +1,218 @@
+// =============================================================
+// _componentes.scss
+// Peças reutilizáveis da interface, cada uma com seu bloco BEM:
+// .botao, .logo, .hamburguer, .menu, .valores, .formulario
+// =============================================================
+@use "variaveis" as *;
+@use "mixins" as *;
+
+// ----- .botao -----
+// Modificadores: --claro (só contorno) e --azul (fundo azul)
+.botao {
+  display: inline-block;
+  padding: 0.8em 1.6em;
+  border-width: 0.125rem;
+  border-style: solid;
+  border-radius: $raio-pilula;
+  font: 600 1rem $fonte-texto;
+  text-decoration: none;
+  cursor: pointer;
+  @include botao-cores($tinta, $tinta, $branco, $azul);
+
+  &--claro {
+    @include botao-cores(transparent, $tinta, $tinta, $azul, $azul, $branco);
+  }
+
+  &--azul {
+    @include botao-cores($azul, $azul, $branco, $tinta);
+  }
+}
+
+// ----- .logo -----
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font: 600 $tamanho-destaque $fonte-titulo;
+  color: $tinta;
+  text-decoration: none;
+
+  &__destaque {
+    color: $azul;
+    font-weight: 800;
+  }
+
+  &__marca {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 50% 50% 50% 0;
+    background: $azul;
+    box-shadow: 0.35em 0.35em 0 $amarelo;
+    margin-right: 0.3em;
+  }
+}
+
+// ----- .hamburguer: botão do menu em telas pequenas -----
+// Funciona sem JavaScript: o checkbox guarda o estado (aberto/fechado).
+// No HTML, checkbox, rótulo e .menu precisam ser irmãos (mesmo pai),
+// porque os seletores usam + e ~.
+.hamburguer {
+  &__checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+
+    @include ate($bp-tablet) {
+      &:focus-visible + .hamburguer__botao {
+        outline: 0.1875rem solid $azul;
+      }
+
+      // menu aberto
+      &:checked ~ .menu {
+        display: block;
+      }
+
+      // as três barras viram um "X"
+      &:checked + .hamburguer__botao .hamburguer__barra--topo {
+        transform: translateY($barra-deslocamento) rotate(45deg);
+      }
+
+      &:checked + .hamburguer__botao .hamburguer__barra--meio {
+        opacity: 0;
+      }
+
+      &:checked + .hamburguer__botao .hamburguer__barra--base {
+        transform: translateY(-$barra-deslocamento) rotate(-45deg);
+      }
+    }
+  }
+
+  &__botao {
+    display: none;
+
+    @include ate($bp-tablet) {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: $barra-espaco;
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0.6rem;
+      cursor: pointer;
+    }
+  }
+
+  &__barra {
+    @include ate($bp-tablet) {
+      display: block;
+      height: $barra-altura;
+      border-radius: 1em;
+      background: $tinta;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    @include movimento-reduzido {
+      transition: none;
+    }
+  }
+}
+
+// ----- .menu (Flexbox) -----
+// Modificador: .menu__link--destaque (botão "Contato")
+.menu {
+  // no celular o menu começa fechado (o checkbox do .hamburguer abre)
+  @include ate($bp-tablet) {
+    display: none;
+    width: 100%;
+    padding-top: $espaco-md;
+  }
+
+  &__lista {
+    @include lista-limpa;
+    display: flex;
+    align-items: center;
+    gap: $espaco-xl;
+
+    @include ate($bp-tablet) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+  }
+
+  &__link {
+    color: $tinta;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      color: $azul;
+    }
+
+    @include ate($bp-tablet) {
+      display: block;
+      padding: $espaco-sm 0;
+      border-top: 0.0625rem solid $nevoa;
+    }
+
+    // O modificador vem depois da regra do celular acima, por isso
+    // o botão mantém o padding próprio também nas telas pequenas.
+    &--destaque {
+      padding: 0.5em 1.2em;
+      border-radius: $raio-pilula;
+      background: $amarelo;
+
+      &:hover {
+        color: $tinta;
+        background: $amarelo-claro;
+      }
+
+      @include ate($bp-tablet) {
+        margin-top: calc($espaco-md / 2);
+        text-align: center;
+      }
+    }
+  }
+}
+
+// ----- .valores (lista de valores da agência) -----
+.valores {
+  @include lista-limpa;
+
+  &__item {
+    padding: 0.75em 0 0.75em 1em;
+    border-left: 0.25rem solid $amarelo;
+    margin-bottom: $espaco-sm;
+  }
+}
+
+// ----- .formulario -----
+.formulario {
+  @include grade(calc($espaco-md / 2));
+  @include cartao($branco);
+  color: $tinta;
+
+  &__rotulo {
+    font-weight: 600;
+  }
+
+  &__campo {
+    width: 100%;
+    margin-bottom: $espaco-sm;
+    padding: 0.75em 1em;
+    border: 0.125rem solid $borda-campo;
+    border-radius: $raio-campo;
+    font: inherit;
+
+    &:focus {
+      border-color: $azul;
+      outline: none;
+      box-shadow: 0 0 0 0.1875rem $amarelo;
+    }
+  }
+
+  // posição do botão; a aparência vem de .botao--azul
+  &__botao {
+    justify-self: start;
+  }
+}

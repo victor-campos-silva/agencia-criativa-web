@@ -1,0 +1,197 @@
+// =============================================================
+// _layout.scss
+// Estrutura da página: espaçamento das seções, cabeçalho,
+// seções de conteúdo e rodapé.
+// Aninhamento moderado: um nível de &__elemento / &--modificador.
+// =============================================================
+@use "variaveis" as *;
+@use "mixins" as *;
+
+// ----- .secao: espaçamento padrão de toda <section> -----
+// Usada junto do bloco da seção: class="secao home"
+.secao {
+  padding: clamp(3rem, 8vw, 6rem) $margem-lateral;
+
+  @include a-partir-de($bp-largo) {
+    // limita a largura do conteúdo: (tela - largura máxima) / 2 de cada lado
+    padding-inline: calc((100vw - $largura-maxima) / 2);
+  }
+}
+
+// ----- .topo (cabeçalho fixo) -----
+.topo {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem $margem-lateral;
+  background: $branco;
+  border-bottom: 0.0625rem solid $nevoa;
+}
+
+// ----- .home -----
+.home {
+  @include grade($espaco-2xl, center);
+  min-height: 85vh;
+  background: $nevoa;
+
+  &__descricao {
+    font-size: $tamanho-destaque;
+  }
+
+  &__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $espaco-md;
+  }
+
+  &__imagem {
+    width: 100%;
+    border-radius: $raio-cartao;
+
+    @include ate($bp-tablet) {
+      order: -1; // imagem acima do texto no celular
+    }
+  }
+
+  @include ate($bp-tablet) {
+    min-height: auto;
+  }
+
+  @include a-partir-de($bp-desktop) {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+// ----- .sobre -----
+.sobre {
+  @include grade($espaco-2xl, center);
+
+  &__imagem {
+    width: 100%;
+    max-width: 30rem;
+    border-radius: 50% $raio-cartao $raio-cartao $raio-cartao;
+  }
+
+  @include a-partir-de($bp-desktop) {
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: $espaco-4xl;
+  }
+}
+
+// ----- .servicos (CSS Grid) -----
+.servicos {
+  background: $tinta;
+  color: $branco;
+
+  &__titulo {
+    margin-bottom: $espaco-xl;
+  }
+
+  &__grade {
+    @include grade($espaco-xl $espaco-3xl);
+    @include lista-limpa;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+
+    @include a-partir-de($bp-tablet) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include a-partir-de($bp-desktop) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__item {
+    padding-top: $espaco-md;
+    border-top: 0.125rem solid rgba($branco, 0.25);
+
+    &--destaque {
+      border-top-color: $amarelo;
+
+      @include a-partir-de($bp-desktop) {
+        grid-column: span 2;
+      }
+    }
+  }
+
+  &__nome {
+    &--destaque {
+      color: $amarelo;
+    }
+  }
+
+  &__descricao {
+    margin: 0;
+    color: $lavanda;
+  }
+}
+
+// ----- .depoimentos (Flexbox) -----
+.depoimentos {
+  &__lista {
+    display: flex;
+    flex-direction: column;
+    gap: $espaco-xl;
+
+    @include a-partir-de($bp-tablet) {
+      flex-direction: row;
+    }
+  }
+
+  &__item {
+    @include cartao($nevoa, $raio-cartao $raio-cartao $raio-cartao 0);
+    flex: 1;
+    margin: 0;
+  }
+
+  &__citacao {
+    margin: 0 0 $espaco-md;
+  }
+
+  &__texto {
+    margin: 0;
+    font: 600 #{$tamanho-destaque}/1.4 $fonte-titulo;
+  }
+
+  &__autor {
+    font-size: 1rem;
+  }
+}
+
+// ----- .contato -----
+.contato {
+  @include grade($espaco-2xl);
+  background: $azul;
+  color: $branco;
+
+  &__endereco {
+    font-style: normal;
+  }
+
+  &__link {
+    color: $amarelo;
+  }
+
+  @include a-partir-de($bp-desktop) {
+    grid-template-columns: 1fr 1fr;
+    gap: $espaco-4xl;
+    align-items: start;
+  }
+}
+
+// ----- .rodape -----
+.rodape {
+  padding: $espaco-lg $margem-lateral;
+  background: $tinta;
+  color: $lavanda;
+  font-size: 0.9375rem;
+
+  &__texto {
+    margin: 0;
+    max-width: none;
+  }
+}

@@ -1,0 +1,53 @@
+// =============================================================
+// _variaveis.scss
+// Todos os valores reaproveitados do projeto ficam aqui.
+// Para mudar o visual do site, altere só este arquivo.
+// =============================================================
+
+// ----- Cores -----
+$azul: #2a3bdb;
+$amarelo: #ffd84d;
+$amarelo-claro: #ffe27a;
+$tinta: #12163a;
+$nevoa: #eef1fb;
+$lavanda: #d6daf5;
+$borda-campo: #b9c0ec;
+$branco: #ffffff;
+
+// ----- Fontes -----
+$fonte-titulo: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+$fonte-texto: "Figtree", "Segoe UI", Arial, sans-serif;
+
+$tamanho-texto: 1.125rem;
+$tamanho-destaque: 1.25rem;
+
+// ----- Espaçamentos -----
+// A escala inteira nasce de uma unidade, calculada com operadores.
+$espaco-base: 1rem;
+$espaco-sm: $espaco-base * 0.75;  // 0.75rem
+$espaco-md: $espaco-base;         // 1rem
+$espaco-lg: $espaco-base * 1.5;   // 1.5rem
+$espaco-xl: $espaco-base * 2;     // 2rem
+$espaco-2xl: $espaco-base * 2.5;  // 2.5rem
+$espaco-3xl: $espaco-base * 3;    // 3rem
+$espaco-4xl: $espaco-base * 5;    // 5rem
+
+$margem-lateral: clamp(1.25rem, 5vw, 5rem);  // margem lateral da página
+$preenchimento-cartao: $espaco-base * 1.75;  // 1.75rem
+$largura-maxima: 80rem;                      // largura do conteúdo em telas grandes
+$altura-cabecalho: 5rem;                     // folga das âncoras sob o cabeçalho fixo
+
+// ----- Bordas -----
+$raio-cartao: 1.5rem;
+$raio-campo: 0.75rem;
+$raio-pilula: 99em;
+
+// ----- Menu hambúrguer -----
+$barra-altura: 0.1875rem;
+$barra-espaco: 0.3125rem;
+$barra-deslocamento: $barra-altura + $barra-espaco;  // 0.5rem: quanto cada barra anda para virar "X"
+
+// ----- Breakpoints -----
+$bp-tablet: 48em;
+$bp-desktop: 56em;
+$bp-largo: 90em;
